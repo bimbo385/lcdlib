@@ -32,8 +32,9 @@ typedef const struct font_info * FONT_P;
 
 //Set to 1 to include functions for direct output of integer & float values
 #define INCLUDE_FLOAT_OUTPUT     0
-#define INCLUDE_INTEGER_OUTPUT   1
-
+#define INCLUDE_INTEGER_OUTPUT   0
+#define INCLUDE_PRINTF_OUTPUT    1
+#define PRINTF_BUFFER_SIZE      64 // maximum string length for printf usage 
 
 /*****************************************************************************
  * All font structures + verbose name defines
@@ -120,6 +121,7 @@ PGM_P   font_get_char_position (FONT_P font, char character);
 
 uint16_t lcd_put_string       (FONT_P font, uint8_t style, char* str);
 uint16_t lcd_put_string_length(FONT_P font, uint8_t style, char* str,      uint8_t length);
+uint16_t lcd_put_string_xy    (FONT_P font, uint8_t style, char* str,      uint8_t page, uint8_t col);
 uint16_t lcd_put_string_P     (FONT_P font, uint8_t style, PGM_P str);
 uint8_t  lcd_put_char         (FONT_P font, uint8_t style, char c);
 uint16_t lcd_put_string_xy_P  (FONT_P font, uint8_t style, PGM_P str,      uint8_t page, uint8_t col);
@@ -129,6 +131,7 @@ void     lcd_set_font         (FONT_P font, uint8_t style);
 uint8_t  lcd_putc             (char c);
 uint8_t  lcd_putc_xy          (char c, uint8_t page, uint8_t col);
 uint16_t lcd_putstr           (char* str);
+uint16_t lcd_putstr_xy        (char* str, uint8_t page, uint8_t col);
 uint16_t lcd_putstr_P         (PGM_P str);
 uint16_t lcd_putstr_xy_P      (PGM_P  str, uint8_t page, uint8_t col);
 
@@ -141,7 +144,10 @@ uint16_t lcd_put_short(int8_t  integer);
 #if INCLUDE_FLOAT_OUTPUT == 1
 uint16_t lcd_put_float (float integer);
 #endif
-
+#if INCLUDE_PRINTF_OUTPUT == 1
+void lcd_printf(uint8_t page, uint8_t startColumn, const char* __fmt, ...);
+void lcd_printf_P(uint8_t page, uint8_t startColumn, PGM_P __fmt, ...);
+#endif
 
 
 /******************************************************************************

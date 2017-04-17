@@ -283,6 +283,16 @@ uint16_t lcd_put_string_length(FONT_P font, uint8_t style, char* str, uint8_t le
  * the string from program memory. The position of the string on the display
  * is selected by page / col.
  */ 
+uint16_t lcd_put_string_xy(FONT_P font, uint8_t style, char* str,uint8_t page, uint8_t col) {
+  LCD_MOVE_TO(page,col);
+  return lcd_put_string(font,style,str);
+  }
+
+/******************************************************************************
+ * Outputs a string on the display, using the given font and style, reading
+ * the string from program memory. The position of the string on the display
+ * is selected by page / col.
+ */ 
 uint16_t lcd_put_string_xy_P(FONT_P font, uint8_t style, PGM_P str,uint8_t page, uint8_t col) {
   LCD_MOVE_TO(page,col);
   return lcd_put_string_P(font,style,str);
@@ -322,7 +332,15 @@ uint16_t lcd_putstr(char* str) {
   return lcd_put_string(global_font_select, global_font_style, str);
   }
 
-  
+
+/******************************************************************************
+ * Outputs a string on the display, using the global font and style at the 
+ * given position
+ */   
+uint16_t lcd_putstr_xy(char* str, uint8_t page, uint8_t col) {
+  return lcd_put_string_xy(global_font_select, global_font_style, str, page, col);
+  }  
+
   
 /******************************************************************************
  * Outputs a string stored in program memory on the display, using the global 
@@ -392,4 +410,30 @@ uint16_t lcd_put_float  (float fvalue) {
 	dtostrf(fvalue, 2, 1, buffer);
 	return lcd_put_string(global_font_select, global_font_style, buffer);
   }
+#endif
+
+#if INCLUDE_PRINTF_OUTPUT == 1
+    /******************************************************************************
+     * Uses printf style formatting for display // Added by Robert S.
+     */ 
+    void lcd_printf(uint8_t page, uint8_t startColumn, const char* __fmt, ...)
+    {
+        char aString[PRINTF_BUFFER_SIZE];
+        va_list argumentlist;
+        va_start(argumentlist, __fmt);
+        vsprintf(aString, __fmt, argumentlist);
+        va_end(argumentlist);
+        (void)lcd_putstr_xy(aString, page, startColumn);    
+    }
+
+
+    void lcd_printf_P(uint8_t page, uint8_t startColumn, PGM_P __fmt, ...)
+    {
+        char aString[PRINTF_BUFFER_SIZE];
+        va_list argumentlist;
+        va_start(argumentlist, __fmt);
+        vsprintf_P(aString, __fmt, argumentlist);
+        va_end(argumentlist);
+        (void)lcd_putstr_xy(aString, page, startColumn);
+    }
 #endif
