@@ -17,7 +17,7 @@
  * 
  * Author:  Jan Michel (jan at mueschelsoft dot de)
  * License: GNU General Public License, version 3
- * Version: v0.96 April 2017
+ * Version: v0.95a November 2012
  * ****************************************************************************
  * New features in v0.96
  *   - added support for EA-DOGXL240 display
@@ -248,8 +248,11 @@ void lcd_clear_area_xy(uint8_t pages, uint8_t columns, uint8_t style, uint8_t pa
  */
 #if DISPLAY_TYPE == 240
   void lcd_set_contrast(uint8_t value) {
-      uint8_t x = (uint8_t)((uint16_t)value*255/100);	// calculate 0-255 value from percent
-      LCD_SET_POTI(x);
+      if (value <= 100)
+      {
+        uint8_t x = (uint8_t)((uint16_t)value*255/100);	// calculate 0-255 value from percent
+        LCD_SET_POTI(x);
+      }      
   } 
 #endif
 
@@ -269,7 +272,7 @@ void lcd_init() {
     //_delay_ms(5);                      // Gib dem Display ein bisschen Zeit für den Reset
     LCD_SET_COM_END(127);               // set last COM electrode
     LCD_SET_PARTIAL_DISPLAY(0, 127);    // set partial display start and end
-    LCD_SET_POTI(0x8F);                 // set Contrast to mid range lvl
+    LCD_SET_POTI(0xCC);                 // set Contrast to 80 %
     LCD_SET_MAPPING_CTRL(2);            // set mapping control to "bottom view"
     LCD_SET_LINE_RATE(11);              // set line rate to 9.4 kilo lines per second
     LCD_SET_TEMP_COMP(1);               // set tmep compensation to -0.10%
